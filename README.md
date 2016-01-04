@@ -4,7 +4,7 @@ overview of your Drupal 7 entities and bundles.
 
 # Usage Drush
 
-    $ drush entitygraph | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
+    $ drush entityrelations | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
 
 # Usage UI
 
