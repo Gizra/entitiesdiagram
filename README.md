@@ -1,5 +1,6 @@
-This module command generates a graph of the entities, fields and their
-relationship of a particular installation of Drupal 7.
+This module generates a graph of the entities, fields and their
+relationship of a particular installation of Drupal 7. This enables a quick
+overview of your Drupal 7 entities and bundles.
 
 # Usage Drush
 
