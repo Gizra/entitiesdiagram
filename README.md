@@ -12,6 +12,7 @@ go to URL `admin/entity-relations/<type>/<display_filds>` to see one entity type
 ### example:
 Display only Nodes with no fields:
 * ```http://mywesite.com/entity-relations/node/false```
+
 Display all entities:
 * ```http://mywesite.com/entity-relations```
 
