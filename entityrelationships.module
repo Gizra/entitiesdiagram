@@ -191,7 +191,7 @@ function entityrelationship_entitygraph_entityreference_connections() {
 function entityrelationship_entitygraph_relation_connections() {
   $field_relation = array();
 
-  // Get all entityreference field names
+  // Get all relation bundles.
   $query = db_select('relation_bundles', 'b');
   $query->fields('b');
   $rows = $query->execute();
