@@ -12,10 +12,10 @@ go to URL `admin/entity-relations/<type>/<display_fields>` to see one entity typ
 
 ### example:
 Display only Nodes with no fields:
-* ```http://mywebsite.com/entity-relations/node/false```
+* ```http://mywebsite.com/admin/entity-relations/node/false```
 
 Display all entities:
-* ```http://mywebsite.com/entity-relations```
+* ```http://mywebsite.com/admin/entity-relations```
 
 Generates a graph in the PNG format.
 
