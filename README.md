@@ -8,7 +8,9 @@ overview of your Drupal 7 entities and bundles.
 
 # Usage UI
 
-go to URL `admin/entity-relations/<type>/<display_fields>` to see one entity type or, to see all entities  `admin/entity-relations`
+go to URL `admin/entity-relations/<type>/<display_fields>` to see one entity type or, 
+
+to see all entities  `admin/entity-relations`
 
 ### example:
 Display only Nodes with no fields:
