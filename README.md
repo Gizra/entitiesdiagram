@@ -6,6 +6,8 @@ overview of your Drupal 7 entities and bundles.
 
     $ drush entityrelations | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
 
+    $ drush entityrelations --include_fields --entity_type=node | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
+
 # Usage UI
 
 go to URL `admin/entity-relations/<type>/<display_fields>` to see one entity type or, 
