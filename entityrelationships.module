@@ -41,6 +41,9 @@ function entityrelationships_entitygraph($include_fields = FALSE, $single_entity
   $graph = array();
 
   $entity_refs = entityrelationship_entitygraph_entityreference_connections();
+  if (module_exists('relation')) {
+    $entity_refs = array_merge($entity_refs, entityrelationship_entitygraph_relation_connections());
+  }
   if ($single_entity_type) {
     $entities = array($single_entity_type => entity_get_info($single_entity_type));
   }
@@ -177,6 +180,46 @@ function entityrelationship_entitygraph_entityreference_connections() {
           );
         }
       }
+    }
+  }
+
+  return  $field_relation;
+}
+
+/**
+ * Get relation connections.
+ */
+function entityrelationship_entitygraph_relation_connections() {
+  $field_relation = array();
+
+  // Get all relation bundles.
+  $query = db_select('relation_bundles', 'b');
+  $query->fields('b');
+  $rows = $query->execute();
+
+  // Create an associative array:
+  // $ar[source_type][source_bundle][field_name][target_type][target_bundle]
+  foreach ($rows as $row) {
+    // Skip wildcard entity_type for now.
+    if ($row->entity_type == '*') {
+      continue;
+    }
+    $bundles = array();
+    if ($row->bundle == '*') {
+      if (!isset($info)) {
+        $info = entity_get_info();
+      }
+      $bundles = array_keys($info[$row->entity_type]['bundles']);
+    }
+    else {
+      $bundles[] = $row->bundle;
+    }
+    foreach ($bundles as $bundle) {
+      $field_relation['relation'][$row->relation_type]['endpoints'][$row->entity_type] = array (
+        'bundle' => $bundle,
+        'cardinality' => 1,
+        'required' => 0,
+      );
     }
   }
 
