@@ -167,7 +167,8 @@ function entityrelationship_entitygraph_entityreference_connections() {
     $field_info = (field_info_field($row->field_name));
     foreach($field_info['bundles'] as $type => $bundles) {
       foreach($bundles as $bundle) {
-        foreach ($field_info['settings']['handler_settings']['target_bundles'] as $target) {
+        $target_bundles = !empty($field_info['settings']['handler_settings']['target_bundles']) ? $field_info['settings']['handler_settings']['target_bundles'] : array($field_info['settings']['target_type'] => $field_info['settings']['target_type']);
+        foreach ($target_bundles as $target) {
           $instance_info = field_info_instance($type, $field_name, $bundle);
           $field_relation[$type][$bundle][$field_name][$field_info['settings']['target_type']] = array (
             'bundle' => $target,
