@@ -4,22 +4,22 @@ overview of your Drupal 7 entities and bundles.
 
 # Usage Drush
 
-    $ drush entityrelations | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
+    $ drush entitiesdiagram | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
 
-    $ drush entityrelations --include_fields --entity_type=node | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
+    $ drush entitiesdiagram --include_fields --entity_type=node | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
 
 # Usage UI
 
-go to URL `admin/entity-relations/<type>/<display_fields>` to see one entity type or, 
+go to URL `admin/entities-diagram/<type>/<display_fields>` to see one entity type or, 
 
 to see all entities  `admin/entity-relations`
 
 ### example:
 Display only Nodes with no fields:
-* ```http://mywebsite.com/admin/entity-relations/node/false```
+* ```http://mywebsite.com/admin/entities-diagram/node/false```
 
 Display all entities:
-* ```http://mywebsite.com/admin/entity-relations```
+* ```http://mywebsite.com/admin/entities-diagram```
 
 Generates a graph in the PNG format.
 
