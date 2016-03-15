@@ -303,7 +303,7 @@ function entityrelationship_entitygraph_generate($graph) {
       }
       $output .= "]\n";
       $color = entityrelationship_random_color();
-      $output .= $source_node . ' -> ' . $target_node . '[color="#' . $color . '"][label="(' . $edge_info['fieldname'] . ')"]\n';
+      $output .= $source_node . ' -> ' . $target_node . '[color="#' . $color . '"][label="(' . $edge_info['fieldname'] . ")\"]\n";
     }
   }
 
