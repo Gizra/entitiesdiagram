@@ -6,10 +6,10 @@
 /**
  * Implements hook_menu().
  */
-function entityrelationships_menu() {
-  $items['admin/entity-relations'] = array(
+function entitiesdiagram_menu() {
+  $items['admin/entities-diagram'] = array(
     'title' => 'Entity relations',
-    'page callback' => 'entityrelationships_menu_callback',
+    'page callback' => 'entitiesdiagram_menu_callback',
     'page arguments' => array(2, 3),
     'access arguments' => array('administer content'),
     'type' => MENU_CALLBACK,
@@ -23,25 +23,25 @@ function entityrelationships_menu() {
  * @param
  *  $entity_type - Pass on and anetity type to render only.
  */
-function entityrelationships_menu_callback($entity_type = FALSE, $include_fields = '') {
-  drupal_add_css(drupal_get_path('module', 'entityrelationships') . '/entityrelationships.css');
+function entitiesdiagram_menu_callback($entity_type = FALSE, $include_fields = '') {
+  drupal_add_css(drupal_get_path('module', 'entitiesdiagram') . '/entitiesdiagram.css');
   drupal_add_js('http://mdaines.github.io/viz.js/bower_components/viz.js/viz.js', 'file');
 
-  $data = 'var dataSVG = `' . entityrelationship_entitygraph_generate(entityrelationships_entitygraph(empty($include_fields), $entity_type)) . '`;';
+  $data = 'var dataSVG = `' . entitiesdiagram_entitygraph_generate(entitiesdiagram_entitygraph(empty($include_fields), $entity_type)) . '`;';
   drupal_add_js($data, 'inline');
 
-  drupal_add_js(drupal_get_path('module', 'entityrelationships') . '/entityrelationships.js', 'file');
+  drupal_add_js(drupal_get_path('module', 'entitiesdiagram') . '/entitiesdiagram.js', 'file');
   return '';
 }
 
 /**
  * Main function to create full graph of entities.
  */
-function entityrelationships_entitygraph($include_fields = FALSE, $single_entity_type = FALSE) {
+function entitiesdiagram_entitygraph($include_fields = FALSE, $single_entity_type = FALSE) {
   $graph = array();
   $entity_refs = array();
-  entityrelationship_entitygraph_entityreference_connections($entity_refs);
-  entityrelationship_entitygraph_core_reference_connections($entity_refs);
+  entitiesdiagram_entitygraph_entityreference_connections($entity_refs);
+  entitiesdiagram_entitygraph_core_reference_connections($entity_refs);
   if ($single_entity_type) {
     $entities = array($single_entity_type => entity_get_info($single_entity_type));
   }
@@ -112,7 +112,7 @@ function entityrelationships_entitygraph($include_fields = FALSE, $single_entity
             // Local column.
             key($foreign_key_info['columns']);
 
-            $foreign_entity_type = entityrelationship_entitygraph_get_entity_by_table($foreign_key_info['table']);
+            $foreign_entity_type = entitiesdiagram_entitygraph_get_entity_by_table($foreign_key_info['table']);
             if ($foreign_entity_type) {
               $relationships[] = $foreign_entity_type;
             }
@@ -137,7 +137,7 @@ function entityrelationships_entitygraph($include_fields = FALSE, $single_entity
         foreach ($field_ref_info as $field_name => $target) {
           foreach ($target as $target_type => $target_info) {
             $relationship = 'entity_' . $target_type . '__bundle_' . $target_info['bundle']; //
-            entityrelationship_entitygraph_relationship($graph, 'entity_' . $entity_type . '__bundle_' . $bundle_name, $relationship, $target_info['required'], $target_info['cardinality'], $target_info['fieldname']);
+            entitiesdiagram_entitygraph_relationship($graph, 'entity_' . $entity_type . '__bundle_' . $bundle_name, $relationship, $target_info['required'], $target_info['cardinality'], $target_info['fieldname']);
           }
         }
       }
@@ -150,7 +150,7 @@ function entityrelationships_entitygraph($include_fields = FALSE, $single_entity
 /**
  * Get entity reference connections.
  */
-function entityrelationship_entitygraph_entityreference_connections(&$field_relation) {
+function entitiesdiagram_entitygraph_entityreference_connections(&$field_relation) {
   // Get all entityreference field names
   $query = db_select('field_config', 'f');
   $query->fields('f', array('field_name'));
@@ -185,7 +185,7 @@ function entityrelationship_entitygraph_entityreference_connections(&$field_rela
 /**
  * Get term and node reference connections.
  */
-function entityrelationship_entitygraph_core_reference_connections(&$entity_refs) {
+function entitiesdiagram_entitygraph_core_reference_connections(&$entity_refs) {
   // Get node and term refs.
   $field_types = array(
     'taxonomy_term' => 'taxonomy_term_reference',
@@ -236,7 +236,7 @@ function entityrelationship_entitygraph_core_reference_connections(&$entity_refs
 /**
  * Get entity name by table.
  */
-function entityrelationship_entitygraph_get_entity_by_table($table) {
+function entitiesdiagram_entitygraph_get_entity_by_table($table) {
   foreach (entity_get_info() as $entity_type => $entity_info) {
     if (!empty($entity_info['base table']) && $entity_info['base table'] == $table) {
       return $entity_type;
@@ -250,7 +250,7 @@ function entityrelationship_entitygraph_get_entity_by_table($table) {
  * @param $graph
  *  Graph array to update.
  */
-function entityrelationship_entitygraph_relationship(&$graph, $source, $target, $required, $cardinality, $fieldname) {
+function entitiesdiagram_entitygraph_relationship(&$graph, $source, $target, $required, $cardinality, $fieldname) {
   $edge_info = array(
     'arrowhead' => 'normal',
   );
@@ -274,7 +274,7 @@ function entityrelationship_entitygraph_relationship(&$graph, $source, $target, 
  * Render graph into digraph format.
  * using https://en.wikipedia.org/wiki/DOT_(graph_description_language)
  */
-function entityrelationship_entitygraph_generate($graph) {
+function entitiesdiagram_entitygraph_generate($graph) {
   // Merge in defaults.
   $graph += array(
     'nodes' => array(),
@@ -288,10 +288,10 @@ function entityrelationship_entitygraph_generate($graph) {
 
   foreach ($graph['nodes'] as $name => $node_info) {
     if (!empty($node_info['group'])) {
-      $output .= entityrelationship_entitygraph_generate_subgraph($name, $node_info);
+      $output .= entitiesdiagram_entitygraph_generate_subgraph($name, $node_info);
     }
     else {
-      $output .= entityrelationship_entitygraph_generate_node($name, $node_info);
+      $output .= entitiesdiagram_entitygraph_generate_node($name, $node_info);
     }
   }
 
@@ -302,7 +302,7 @@ function entityrelationship_entitygraph_generate($graph) {
         $output .= ' "' . check_plain($k) . '" = "'. check_plain($v) . '"' . "\n";
       }
       $output .= "]\n";
-      $color = entityrelationship_random_color();
+      $color = entitiesdiagram_random_color();
       $output .= format_string('@source_node -> @target_node [color="@color"][label="(@fieldname)" fontcolor="@color"]',
         array(
           '@source_node' => $source_node,
@@ -321,21 +321,21 @@ function entityrelationship_entitygraph_generate($graph) {
 /**
  * Create random RGB element.
  */
-function entityrelationship_random_color_part() {
+function entitiesdiagram_random_color_part() {
   return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
 }
 
 /**
  * Create random RGB color.
  */
-function entityrelationship_random_color() {
-  return '#' . entityrelationship_random_color_part() . entityrelationship_random_color_part() . entityrelationship_random_color_part();
+function entitiesdiagram_random_color() {
+  return '#' . entitiesdiagram_random_color_part() . entitiesdiagram_random_color_part() . entitiesdiagram_random_color_part();
 }
 
 /**
  * Create a subgraph
  */
-function entityrelationship_entitygraph_generate_subgraph($name, $subgraph_info) {
+function entitiesdiagram_entitygraph_generate_subgraph($name, $subgraph_info) {
   $label = $subgraph_info['label'];
   unset($subgraph_info['label']);
   unset($subgraph_info['group']);
@@ -344,7 +344,7 @@ function entityrelationship_entitygraph_generate_subgraph($name, $subgraph_info)
   $output .= 'label = "' . check_plain($label) . '"' . "\n";
 
   foreach ($subgraph_info as $node_name => $node_info) {
-    $output .= entityrelationship_entitygraph_generate_node($node_name, $node_info);
+    $output .= entitiesdiagram_entitygraph_generate_node($node_name, $node_info);
   }
 
   $output .= "}\n";
@@ -354,7 +354,7 @@ function entityrelationship_entitygraph_generate_subgraph($name, $subgraph_info)
 /**
  * Create a single node box.
  */
-function entityrelationship_entitygraph_generate_node($name, $node_info) {
+function entitiesdiagram_entitygraph_generate_node($name, $node_info) {
   // Merge in defaults.
   $node_info += array(
     'title' => $name,
