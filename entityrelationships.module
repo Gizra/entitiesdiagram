@@ -303,7 +303,14 @@ function entityrelationship_entitygraph_generate($graph) {
       }
       $output .= "]\n";
       $color = entityrelationship_random_color();
-      $output .= $source_node . ' -> ' . $target_node . '[color="#' . $color . '"][label="(' . $edge_info['fieldname'] . ")\"]\n";
+      $output .= format_string('@source_node -> @target_node [color="@color"][label="(@fieldname)" fontcolor="@color"]',
+        array(
+          '@source_node' => $source_node,
+          '@target_node' => $target_node,
+          '@color' => $color,
+          '@fieldname' => $edge_info['fieldname'],
+        )
+      );
     }
   }
 
@@ -322,7 +329,7 @@ function entityrelationship_random_color_part() {
  * Create random RGB color.
  */
 function entityrelationship_random_color() {
-  return entityrelationship_random_color_part() . entityrelationship_random_color_part() . entityrelationship_random_color_part();
+  return '#' . entityrelationship_random_color_part() . entityrelationship_random_color_part() . entityrelationship_random_color_part();
 }
 
 /**
