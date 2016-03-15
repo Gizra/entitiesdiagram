@@ -39,8 +39,9 @@ function entityrelationships_menu_callback($entity_type = FALSE, $include_fields
  */
 function entityrelationships_entitygraph($include_fields = FALSE, $single_entity_type = FALSE) {
   $graph = array();
-
-  $entity_refs = entityrelationship_entitygraph_entityreference_connections();
+  $entity_refs = array();
+  entityrelationship_entitygraph_entityreference_connections($entity_refs);
+  entityrelationship_entitygraph_core_reference_connections($entity_refs);
   if ($single_entity_type) {
     $entities = array($single_entity_type => entity_get_info($single_entity_type));
   }
@@ -50,7 +51,7 @@ function entityrelationships_entitygraph($include_fields = FALSE, $single_entity
 
   foreach ($entities as $entity_type => $entity_info) {
     // Exclude non important entities.
-    if (in_array($entity_type, array('message_type', 'user', 'restful_token_auth',))) {
+    if (in_array($entity_type, array('message_type', 'restful_token_auth',))) {
       continue;
     }
     $node_info = array();
@@ -130,7 +131,6 @@ function entityrelationships_entitygraph($include_fields = FALSE, $single_entity
       $group['group'] = TRUE;
     }
 
-
     // Entity reference edges.
     if (isset($entity_refs[$entity_type])) {
       foreach ($entity_refs[$entity_type] as $bundle_name => $field_ref_info) {
@@ -150,9 +150,7 @@ function entityrelationships_entitygraph($include_fields = FALSE, $single_entity
 /**
  * Get entity reference connections.
  */
-function entityrelationship_entitygraph_entityreference_connections() {
-  $field_relation = array();
-
+function entityrelationship_entitygraph_entityreference_connections(&$field_relation) {
   // Get all entityreference field names
   $query = db_select('field_config', 'f');
   $query->fields('f', array('field_name'));
@@ -164,7 +162,7 @@ function entityrelationship_entitygraph_entityreference_connections() {
   // $ar[source_type][source_bundle][field_name][target_type][target_bundle]
   foreach ($rows as $row) {
     $field_name = $row->field_name;
-    $field_info = (field_info_field($row->field_name));
+    $field_info = field_info_field($row->field_name);
     foreach($field_info['bundles'] as $type => $bundles) {
       foreach($bundles as $bundle) {
         $target_bundles = !empty($field_info['settings']['handler_settings']['target_bundles']) ? $field_info['settings']['handler_settings']['target_bundles'] : array($field_info['settings']['target_type'] => $field_info['settings']['target_type']);
@@ -179,8 +177,58 @@ function entityrelationship_entitygraph_entityreference_connections() {
       }
     }
   }
+}
 
-  return  $field_relation;
+
+
+/**
+ * Get term and node reference connections.
+ */
+function entityrelationship_entitygraph_core_reference_connections(&$entity_refs) {
+  // Get node and term refs.
+  $field_types = array(
+    'taxonomy_term' => 'taxonomy_term_reference',
+    'node' => 'node_reference',
+    'user' => 'user_reference',
+  );
+  foreach ($field_types as $source_type => $field_type) {
+    $fields = field_read_fields(array('type' => $field_type));
+    // Create an associative array:
+    // $ar[source_type][source_bundle][field_name][target_type][target_bundle]
+    foreach ($fields as $field_name => $taxonomy_field) {
+      $field_info = field_info_field($field_name);
+      foreach ($field_info['bundles'] as $type => $bundles) {
+        foreach ($bundles as $bundle) {
+          $targets = array();
+          // Build list of target bundle.
+          if ($source_type == 'taxonomy_term') {
+            foreach ($field_info['settings']['allowed_values'] as $target) {
+              $targets[] = $target['vocabulary'];
+            }
+          }
+          elseif ($source_type == 'node') {
+            foreach ($field_info['settings']['referenceable_types'] as $target) {
+              if ($target) {
+                $targets[] = $target;
+              }
+            }
+          }
+          elseif ($source_type == 'user') {
+            $targets[] = 'user';
+          }
+
+          foreach ($targets as $target) {
+            $instance_info = field_info_instance($type, $field_name, $bundle);
+            $entity_refs[$type][$bundle][$field_name][$source_type] = array(
+              'bundle' => $target,
+              'cardinality' => $field_info['cardinality'],
+              'required' => $instance_info['required'],
+            );
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
