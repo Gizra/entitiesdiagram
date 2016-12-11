@@ -7,12 +7,12 @@
  * Implements hook_menu().
  */
 function entitiesdiagram_menu() {
-  $items['admin/entities-diagram'] = array(
-    'title' => 'Entity relations',
+  $items['admin/reports/entities-diagram'] = array(
+    'title' => 'Entity relations Diagram',
     'page callback' => 'entitiesdiagram_menu_callback',
-    'page arguments' => array(2, 3),
+    'page arguments' => array(3, 4),
     'access arguments' => array('administer content'),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_NORMAL_ITEM,
   );
   return $items;
 }
