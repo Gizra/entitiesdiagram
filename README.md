@@ -25,3 +25,12 @@ Generates a graph in the PNG format.
 
 ![entity_relations___productivity](https://cloud.githubusercontent.com/assets/165644/12092755/ad4bb60e-b307-11e5-904f-a75ee8db7b5c.png)
 ![entity_relations___productivity](https://cloud.githubusercontent.com/assets/165644/12093435/8a52dd54-b30b-11e5-9b43-2f63e5befd66.png)
+
+## Make file
+```
+projects[entitiesdiagram][type] = "module"
+projects[entitiesdiagram][subdir] = "contrib"
+projects[entitiesdiagram][download][type] = "git"
+projects[entitiesdiagram][download][branch] = "master"
+projects[entitiesdiagram][download][url] = "https://github.com/Gizra/entitiesdiagram.git"
+```
