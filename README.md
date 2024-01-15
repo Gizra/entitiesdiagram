@@ -4,9 +4,9 @@ overview of your Drupal 7 entities and bundles.
 
 # Usage Drush
 
-    $ drush entitiesdiagram | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
+    $ drush entitiesdiagram | dot -Gratio=0.7 -Eminlen=2 -T svg -o ./test.svg
 
-    $ drush entitiesdiagram --include_fields --entity_type=node | dot -Gratio=0.7 -Eminlen=2 -T png -o ./test.png
+    $ drush entitiesdiagram --include_fields --entity_type=node | dot -Gratio=0.7 -Eminlen=2 -T svg -o ./test.svg
 
 # Usage UI
 
